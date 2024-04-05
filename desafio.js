@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 class Product {
     constructor(title, description, price, thumbnail, code, stock) {
         this.id = this.generateId();
@@ -16,53 +19,108 @@ class Product {
 console.log(Product)
 
 class ProductManager {
-    constructor() {
-        this.products = [];
+    constructor(FilePath) {
+        this.path = FilePath;
 
     }
 
     addProduct(product) {
-        const isDuplicate = this.products.some(existingProduct => existingProduct.code === product.code);
-        if (isDuplicate) {
-            throw new Error('El código del producto ya existe.');
-        }
-        this.products.push(product);
+        // Cargar productos existentes desde el archivo
+        const products = this.getProducts();
+        // Asignar un ID autoincrementable al nuevo producto
+        const nextId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+        const newProduct = { id: nextId, ...product };
+        // Agregar el nuevo producto al arreglo de productos
+        products.push(newProduct);
+        // Guardar los productos actualizados en el archivo
+        this.saveProducts(products);
+        return newProduct; // Devolver el producto agregado con su ID asignado
     }
 
     getProducts() {
-        return this.products;
+        let data;
+        try {
+            data = fs.readFileSync(this.path, 'utf8');
+        } catch (error) {
+            return [];
+        }
+        return JSON.parse(data);
     }
 
     getProductById(productId) {
-        const product = this.products.find(product => product.id === productId);
+        // Obtener todos los productos
+        const products = this.getProducts();
+        // Buscar el producto con el ID especificado
+        const product = products.find(p => p.id === productId);
         if (!product) {
             throw new Error('Producto no encontrado.');
         }
         return product;
     }
+    updateProduct(productId, updatedFields) {
+        // Obtener todos los productos
+        let products = this.getProducts();
+        // Buscar el índice del producto con el ID especificado
+        const index = products.findIndex(p => p.id === productId);
+        if (index === -1) {
+            throw new Error('Producto no encontrado.');
+        }
+        // Actualizar el producto con los campos proporcionados
+        products[index] = { ...products[index], ...updatedFields };
+        // Guardar los productos actualizados en el archivo
+        this.saveProducts(products);
+    }
+
+    deleteProduct(productId) {
+        // Obtener todos los productos
+        let products = this.getProducts();
+        // Filtrar el producto con el ID especificado
+        products = products.filter(p => p.id !== productId);
+        // Guardar los productos actualizados en el archivo
+        this.saveProducts(products);
+    }
+
+    saveProducts(products) {
+        const data = JSON.stringify(products, null, 2);
+        fs.writeFileSync(this.path, data, (err) => {
+            if (err) {
+                console.error('Error al guardar productos:', err);
+                throw new Error('Error al guardar productos en el archivo.');
+            }
+        });
+    }
 }
 
-const productManager = new ProductManager();
+const productManager = new ProductManager('productos.json');
 
-console.log('Productos después de la creación:', productManager.getProducts())
+// Agregar un producto
+const newProduct = {
+    title: 'Producto Nuevo',
+    description: 'Descripción del producto nuevo',
+    price: 100,
+    thumbnail: 'imagen.jpg',
+    code: 'ABC123',
+    stock: 50
+};
+const addedProduct = productManager.addProduct(newProduct);
+console.log('Producto agregado:', addedProduct);
 
-productManager.addProduct(new Product("titulo", "Descripción", 20, "imagen1.jpg", "ABC123", 10));
-productManager.addProduct(new Product("titulo", "Descripción", 30, "imagen2.jpg", "DEF456", 15));
+// Consultar un producto por su ID
+const productId = addedProduct.id;
+const product = productManager.getProductById(productId);
+console.log('Producto encontrado por ID:', product);
 
-console.log('Todos los productos:', productManager.getProducts())
+// Modificar un producto
+const updatedFields = {
+    title: 'Producto Modificado',
+    description: 'Descripción del producto modificado',
+    price: 150,
+    thumbnail: 'imagen_modificada.jpg',
+    stock: 30
+};
+productManager.updateProduct(productId, updatedFields);
+console.log('Producto modificado:', productManager.getProductById(productId));
 
-const newProduct = new Product("producto prueba", "Este es un producto prueba", 200, "Sin imagen", "abc123", 25);
-const isDuplicate = productManager.products.some(product => product.code === newProduct.code);
-if (isDuplicate) {
-    console.error('Error: El código del producto ya existe.');
-} else {
-    productManager.addProduct(newProduct);
-}
-
-const productId = productManager.getProducts()[0].id;
-const product = productManager.products.find(product => product.id === productId);
-if (product) {
-    console.log('Producto obtenido por ID:', product);
-} else {
-    console.error('Error: Producto no encontrado.');
-}
+// Eliminar un producto
+productManager.deleteProduct(productId);
+console.log('Producto eliminado. Productos restantes:', productManager.getProducts());
