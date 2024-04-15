@@ -1,6 +1,6 @@
 // Paso 1: importar
 import express from 'express';
-import ProductManager from '../src/desafio.js';
+import ProductManager from './ProductManager.js';
 
 /// Paso 2: instanciar el servidor
 const app = express();
