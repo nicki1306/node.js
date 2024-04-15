@@ -6,16 +6,16 @@ import ProductManager from './ProductManager.js';
 const app = express();
 const PORT = 8080;
 
-const productManager = new ProductManager('productos.json');
-await productManager.addProduct({title: 'Product 1',});
-console.log(await productManager .getProducts(0));
+//const productManager = new ProductManager('productos.json');
+//await productManager.addProduct({title: 'Product 1',});
+//console.log(await productManager .getProducts());
 
 
 // Paso 3: definir los endpoints
 // Primer endpoint de Express
 app.get('/products', async (req, res) => {
     const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
-    productManager.getProducts(limit)
+    ProductManager.getProducts(limit)
         .then(products => {
             res.json(products);
         })
@@ -26,7 +26,7 @@ app.get('/products', async (req, res) => {
 
 app.get('/products/:pid', async (req, res) => {
     const productId = parseInt(req.params.pid);
-    productManager.getProductById(productId)
+    ProductManager.getProductById(productId)
         .then(product => {
             res.json(product);
         })
