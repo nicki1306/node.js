@@ -89,6 +89,7 @@ class ProductManager {
 
 const productManager = new ProductManager('productos.json');
 
+
 const newProduct = {
     title: 'Producto Nuevo',
     description: 'Descripción del producto nuevo',
