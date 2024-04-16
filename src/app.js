@@ -11,8 +11,10 @@ const PORT = 8080;
 const productManager = new ProductManager();
 
 app.get('/products', (req, res) => {
+    console.log("muestra productos")
     const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
     const products = productManager.getProducts(limit);
+    console.log(products)
     if (products) {
         res.json(products);
     } else {
@@ -21,7 +23,7 @@ app.get('/products', (req, res) => {
 });
 
 // Endpoint para obtener un producto por su ID
-app.get('/products/:pid', (req, res) => {
+app.get('/product/:pid', (req, res) => {
     const productId = parseInt(req.params.pid);
     const product = productManager.getProductById(productId);
     if (product) {
@@ -30,6 +32,8 @@ app.get('/products/:pid', (req, res) => {
         res.status(404).json({ error: 'Producto no encontrado.' });
     }
 });
+
+
 
 app.listen(PORT, () => {
     console.log(`Servidor escuchando en http://localhost:${PORT}`);
