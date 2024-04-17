@@ -1,5 +1,4 @@
 import fs from 'fs';
-import path from 'path';
 
 class Product {
     constructor(title, description, price, thumbnail, code, stock) {
@@ -37,14 +36,14 @@ class ProductManager {
         return newProduct;
     }
 
-    getProducts() {
+    getProducts(limit) {
         let data;
         try {
             data = fs.readFileSync(this.path, 'utf8');
+            return JSON.parse(data);
         } catch (error) {
             return [];
         }
-        return JSON.parse(data);
     }
 
     getProductById(productId) {

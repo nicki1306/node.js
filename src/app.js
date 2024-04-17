@@ -8,10 +8,9 @@ const PORT = 8080;
 
 // Paso 3: definir los endpoints
 // Primer endpoint de Express
-const productManager = new ProductManager();
+const productManager = new ProductManager('./productos.json');
 
 app.get('/products', (req, res) => {
-    console.log("muestra productos")
     const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
     const products = productManager.getProducts(limit);
     console.log(products)
