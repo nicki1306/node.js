@@ -1,39 +1,19 @@
 // Paso 1: importar
 import express from 'express';
 import ProductManager from './ProductManager.js';
+import  config  from './config.js';
+import userRoutes from './routes/user.routes.js';
 
 /// Paso 2: instanciar el servidor
 const app = express();
-const PORT = 8080;
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(userRoutes);
+app.use('./static', express.static('${config.DIRNAME}/src/public'));
 
 // Paso 3: definir los endpoints
-// Primer endpoint de Express
-const productManager = new ProductManager('./productos.json');
 
-app.get('/products', (req, res) => {
-    const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
-    const products = productManager.getProducts(limit);
-    console.log(products)
-    if (products) {
-        res.json(products);
-    } else {
-        res.status(500).json({ error: 'Error al obtener los productos.' });
-    }
-});
-
-// Endpoint para obtener un producto por su ID
-app.get('/product/:pid', (req, res) => {
-    const productId = parseInt(req.params.pid);
-    const product = productManager.getProductById(productId);
-    if (product) {
-        res.json(product);
-    } else {
-        res.status(404).json({ error: 'Producto no encontrado.' });
-    }
-});
-
-
-
-app.listen(PORT, () => {
-    console.log(`Servidor escuchando en http://localhost:${PORT}`);
+app.listen(config.PORT, () => {
+    console.log(`Servidor escuchando en http://localhost:${config.PORT}`);
 });
