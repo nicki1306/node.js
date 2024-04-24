@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { uploader } from '../uploader.js';
 
+const products = [];
+
 
 const firstMidd = (req, res, next) => {
     console.log('Se procesa el endpoint'); 
@@ -10,7 +12,7 @@ const firstMidd = (req, res, next) => {
 const router = Router();
 
 router.get('/', firstMidd, (req, res) => {
-    res.json(data);
+    res.json(products);
 });
 
 router.post('/', uploader.single('thumbnail'), (req, res) => {

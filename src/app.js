@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(userRoutes);
 app.use(uploader.single('image'));
 app.use('/static', express.static(`${config.DIRNAME}/src/public`)); 
-//app.use('./routes/products', productRoutes); SI DESCOMENTO ESTAS DOS LINEAS ME TIRA UN ERROR RELACIONADO AL MIDLEWARE
+app.use('./routes/products', productRoutes); //SI DESCOMENTO ESTAS DOS LINEAS ME TIRA UN ERROR RELACIONADO AL MIDLEWARE
 //app.use('./routes/carts', cartRoutes);
 
 // Paso 3: definir los endpoints
