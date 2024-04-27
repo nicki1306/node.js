@@ -1,13 +1,13 @@
+import express from 'express';
 import fs from 'fs-extra';
 import path from'path';
 import config from '../config.js';
-import express from 'express';
 
 
 // Definir el archivo JSON para productos y carritos
 
-const productsFile = path.join(config.DIRNAME, './data/products.json');
-const cartsFile = path.join(config.DIRNAME, './data/carts.json');
+const productsFile = path.join(config.DIRNAME, './products.json');
+const cartsFile = path.join(config.DIRNAME, './carts.json');
 
 // Leer productos del archivo JSON
 const getProducts = async () => {
