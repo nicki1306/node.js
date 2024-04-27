@@ -1,9 +1,8 @@
-import path  from 'path';
-import * as url from 'url';
+import path from 'path';
 
 const config = {
     PORT: 8080,
-    DIRNAME: path.dirname(url.fileURLToPath(import.meta.url)),
+    DIRNAME: path.dirname(new URL(import.meta.url).pathname),
 
     get UPLOAD_DIR() {
         return path.join(this.DIRNAME, 'public');

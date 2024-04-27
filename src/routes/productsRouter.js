@@ -2,26 +2,12 @@ import fs from 'fs-extra';
 import path from'path';
 import config from '../config.js';
 import express from 'express';
-import { Router } from 'express';
 
-// Crear la aplicación de Express
-
-// Middleware para parsear el cuerpo de las solicitudes como JSON
-const productsRouter  = Router();
-
-// Ruta base para los productos
-//const productsRouter = express.Router();
-//app.use('/api/products', productsRouter);
-
-// Ruta base para los carritos
-const cartsRouter = express.Router();
-//app.use('/api/carts', cartsRouter);
 
 // Definir el archivo JSON para productos y carritos
 
-const productsFile = path.join(config.DIRNAME, '../productos.json');
-
-const cartsFile = path.join(config.DIRNAME, '../carrito.json');
+const productsFile = path.join(config.DIRNAME, './data/products.json');
+const cartsFile = path.join(config.DIRNAME, './data/carts.json');
 
 // Leer productos del archivo JSON
 const getProducts = async () => {
@@ -46,15 +32,16 @@ const saveCarts = async (carts) => {
 };
 
 // Rutas para los productos
+const Router = express.Router();
 
-productsRouter.get('/', async (req, res) => {
+Router.get('/', async (req, res) => {
     const limit = parseInt(req.query.limit) || 0;
     const products = await getProducts();
     const limitedProducts = products.slice(0, limit);
     res.json(limitedProducts);
 });
 
-productsRouter.get('/:pid', async (req, res) => {
+Router.get('/:pid', async (req, res) => {
     const { pid } = req.params;
     const products = await getProducts();
     const product = products.find((product) => product.id === pid);
@@ -65,7 +52,7 @@ productsRouter.get('/:pid', async (req, res) => {
     }
 });
 
-productsRouter.post('/', async (req, res) => {
+Router.post('/', async (req, res) => {
     const products = await getProducts();
     const newProduct = {
         id: Math.max(...products.map((product) => product.id)) + 1,
@@ -83,7 +70,7 @@ productsRouter.post('/', async (req, res) => {
     res.json(newProduct);
 });
 
-productsRouter.put('/:pid', async (req, res) => {
+Router.put('/:pid', async (req, res) => {
     const { pid } = req.params;
     const products = await getProducts();
     const productIndex = products.findIndex((product) => product.id === pid);
@@ -100,7 +87,7 @@ productsRouter.put('/:pid', async (req, res) => {
     }
 });
 
-productsRouter.delete('/:pid', async (req, res) => {
+Router.delete('/:pid', async (req, res) => {
     const { pid } = req.params;
     const products = await getProducts();
     const productIndex = products.findIndex((product) => product.id === pid);
@@ -115,7 +102,7 @@ productsRouter.delete('/:pid', async (req, res) => {
 
 // Rutas para los carritos
 
-cartsRouter.post('/', async (req, res) => {
+Router.post('/', async (req, res) => {
     const carts = await getCarts();
     const newCart = {
         id: Math.max(...carts.map((cart) => cart.id)) + 1,
@@ -126,4 +113,4 @@ cartsRouter.post('/', async (req, res) => {
     res.json(newCart);
 });
 
-export default { productsRouter, cartsRouter };
+export default Router ;

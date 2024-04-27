@@ -1,7 +1,5 @@
 import fs from 'fs';
 
-const productsManager = new ProductManager('productos.json');
-
 class Product {
     constructor(title, description, price, thumbnail, code, stock) {
         this.id = this.generateId();
@@ -17,24 +15,18 @@ class Product {
         return '_' + Math.random().toString(36).substring(2, 9);
     }
 }
-console.log(Product)
 
 class ProductManager {
     constructor(FilePath) {
         this.path = FilePath;
-
     }
 
     addProduct(product) {
-
         const products = this.getProducts();
         const nextId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-
         const newProduct = { id: nextId, ...product };
         products.push(newProduct);
-
         this.saveProducts(products);
-
         return newProduct;
     }
 
@@ -49,19 +41,16 @@ class ProductManager {
     }
 
     getProductById(productId) {
-
         const products = this.getProducts();
-
         const product = products.find(p => p.id === productId);
         if (!product) {
             throw new Error('Producto no encontrado.');
         }
         return product;
     }
+
     updateProduct(productId, updatedFields) {
-
         let products = this.getProducts();
-
         const index = products.findIndex(p => p.id === productId);
         if (index === -1) {
             throw new Error('Producto no encontrado.');
@@ -71,7 +60,6 @@ class ProductManager {
     }
 
     deleteProduct(productId) {
-
         let products = this.getProducts();
         products = products.filter(p => p.id !== productId);
         this.saveProducts(products);
@@ -88,8 +76,7 @@ class ProductManager {
     }
 }
 
-const productManager = new ProductManager('productos.json');
-
+const productManager = new ProductManager('./products.json');
 
 const newProduct = {
     title: 'Producto Nuevo',
@@ -99,6 +86,7 @@ const newProduct = {
     code: 'ABC123',
     stock: 50
 };
+
 const addedProduct = productManager.addProduct(newProduct);
 console.log('Producto agregado:', addedProduct);
 
@@ -113,11 +101,14 @@ const updatedFields = {
     thumbnail: 'imagen_modificada.jpg',
     stock: 30
 };
+
 productManager.updateProduct(productId, updatedFields);
 console.log('Producto modificado:', productManager.getProductById(productId));
 
 productManager.deleteProduct(productId);
 console.log('Producto eliminado. Productos restantes:', productManager.getProducts());
 
-
 export default ProductManager;
+
+
+
