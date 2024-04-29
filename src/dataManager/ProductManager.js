@@ -34,11 +34,14 @@ class ProductManager {
         let data;
         try {
             data = fs.readFileSync(this.path, 'utf8');
-            return JSON.parse(data);
+            return JSON.parse(
+                limit ? data.slice(0, limit) : data
+            );
         } catch (error) {
             return [];
         }
     }
+
 
     getProductById(productId) {
         const products = this.getProducts();

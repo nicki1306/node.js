@@ -2,6 +2,7 @@ import express from 'express';
 import fs from 'fs-extra';
 import path from'path';
 import config from '../config.js';
+import ProductManager  from '../dataManager/ProductManager.js';
 
 
 // Definir el archivo JSON para productos y carritos
@@ -112,5 +113,6 @@ Router.post('/', async (req, res) => {
     await saveCarts(carts);
     res.json(newCart);
 });
+
 
 export default Router ;
