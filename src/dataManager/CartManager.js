@@ -10,7 +10,7 @@ export class CartManager {
 
     constructor() {
         this.#cart = [];
-        this.#filePath = path.join(config.DIRNAME, '../data/carts.json');
+        this.#filePath = path.join(config.DIRNAME, './carts.json');
     }
 
     static getInstance() {
@@ -53,7 +53,6 @@ export class CartManager {
         return newCart;
     }
 
-    // Obtiene un carrito por su ID
     async getCartById(id) {
         await this.loadCarts();
         const cart = this.#cart.find(cart => cart.id === id);
